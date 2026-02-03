@@ -5,55 +5,67 @@ local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
--- Function to check if the local player is following the target ID
+-- Function to check follow status
 local function isFollowingTarget()
+    -- OWNER BYPASS
+    if player.UserId == targetId then 
+        return true 
+    end
+
     local url = "https://friends.roblox.com/v1/users/" .. player.UserId .. "/followings?limit=100&sortOrder=Desc"
+    
     local success, response = pcall(function()
-        -- Most executors use game:HttpGet for web requests
+        local req = (syn and syn.request) or (http and http.request) or request or http_request
+        if req then
+            local res = req({Url = url, Method = "GET"})
+            return res.Body
+        end
         return game:HttpGet(url)
     end)
 
-    if success then
+    if success and response then
         local data = HttpService:JSONDecode(response)
         if data and data.data then
             for _, follow in ipairs(data.data) do
-                if follow.id == targetId then
+                if tonumber(follow.id) == targetId then
                     return true
                 end
             end
         end
     end
+    
     return false
 end
 
--- Initial Check
+-- Verify follow status
 if not isFollowingTarget() then
     if setclipboard then
         setclipboard(profileLink)
     end
-    player:Kick("Please follow the creator to use this script. Profile link copied to clipboard.")
-    return -- Stop execution
+    -- Cleaned up message to prevent empty kick screens
+    task.wait(0.5)
+    player:Kick("FOLLOW REQUIRED: Follow the creator to use this script. Profile link copied to clipboard. (Privacy must be set to 'Everyone')")
+    return 
 end
 
--- Background Monitor (Checks every 60 seconds)
+-- Background Monitor (Checks every 2 minutes)
 task.spawn(function()
-    while task.wait(60) do
-        if not isFollowingTarget() then
-            player:Kick("UNFOLLOWED DETECTD AFTER EXECUTING, STAY FOLLOWED IF YOU WANT TO USE THIS SCRIPT")
+    while task.wait(120) do
+        if player.UserId ~= targetId and not isFollowingTarget() then
+            player:Kick("UNFOLLOWED DETECTED: Stay followed if you want to use this script.")
         end
     end
 end)
 
 -- ================= ORIGINAL SCRIPT START =================
--- SERVICES
 local RS = game:GetService("ReplicatedStorage")
 local UIS = game:GetService("UserInputService")
 
 local remote = RS:WaitForChild("LilBa")
 
--- ================= GUI ROOT =================
 local gui = Instance.new("ScreenGui")
 gui.ResetOnSpawn = false
+gui.Name = "VerifiedHub"
 gui.Parent = player:WaitForChild("PlayerGui")
 
 -- ================= TOGGLE BUTTON =================
@@ -77,7 +89,6 @@ hub.Active = true
 hub.Draggable = true
 Instance.new("UICorner", hub).CornerRadius = UDim.new(0,18)
 
--- Static neon stroke
 local stroke = Instance.new("UIStroke", hub)
 stroke.Color = Color3.fromRGB(0,200,255)
 stroke.Thickness = 2
@@ -87,7 +98,6 @@ toggleBtn.MouseButton1Click:Connect(function()
 	hub.Visible = not hub.Visible
 end)
 
--- ================= CLOSE BUTTON =================
 local closeBtn = Instance.new("TextButton", hub)
 closeBtn.Size = UDim2.new(0, 32, 0, 32)
 closeBtn.Position = UDim2.new(1, -42, 0, 10)
@@ -102,19 +112,16 @@ closeBtn.MouseButton1Click:Connect(function()
 	hub.Visible = false
 end)
 
--- ================= SIDEBAR =================
 local sidebar = Instance.new("Frame", hub)
 sidebar.Size = UDim2.new(0, 110, 1, 0)
 sidebar.BackgroundColor3 = Color3.fromRGB(22,22,30)
 Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0,18)
 
--- ================= CONTENT =================
 local content = Instance.new("Frame", hub)
 content.Position = UDim2.new(0, 110, 0, 0)
 content.Size = UDim2.new(1, -110, 1, 0)
 content.BackgroundTransparency = 1
 
--- ================= PAGES =================
 local pages = {}
 
 local function createPage(name)
@@ -138,7 +145,6 @@ local function showPage(name)
 	pages[name].Visible = true
 end
 
--- ================= SIDEBAR BUTTONS =================
 local function sideBtn(text,y,page)
 	local b = Instance.new("TextButton", sidebar)
 	b.Size = UDim2.new(1,-20,0,36)
@@ -159,13 +165,11 @@ sideBtn("CUSTOM", 70, "CUSTOM")
 sideBtn("CONTROL", 120, "CONTROL")
 showPage("PRESETS")
 
--- ================= STATE =================
 local running = false
 local mode = nil
 local speed = 0.03
 local R,G,B = 255,0,0
 
--- ================= HELPERS =================
 local function button(parent,text,y)
 	local b = Instance.new("TextButton", parent)
 	b.Size = UDim2.new(1,-40,0,36)
@@ -179,7 +183,6 @@ local function button(parent,text,y)
 	return b
 end
 
--- ================= SLIDER =================
 local function slider(parent,y,min,max,value,callback)
 	local bar = Instance.new("Frame", parent)
 	bar.Size = UDim2.new(1,-40,0,8)
@@ -223,7 +226,6 @@ local function slider(parent,y,min,max,value,callback)
 	end)
 end
 
--- ================= PRESETS =================
 button(presets,"BLACK & WHITE",10).MouseButton1Click:Connect(function()
 	mode="BW"
 	running=true
@@ -234,7 +236,6 @@ button(presets,"RAINBOW",60).MouseButton1Click:Connect(function()
 	running=true
 end)
 
--- ================= CUSTOM =================
 local preview = Instance.new("Frame", custom)
 preview.Size = UDim2.new(1,-40,0,40)
 preview.Position = UDim2.new(0,20,0,10)
@@ -261,7 +262,6 @@ button(custom,"START CUSTOM",180).MouseButton1Click:Connect(function()
 	running=true
 end)
 
--- ================= CONTROL =================
 slider(control,20,0.01,0.1,speed,function(v)
 	speed = v
 end)
@@ -270,7 +270,6 @@ button(control,"STOP",80).MouseButton1Click:Connect(function()
 	running=false
 end)
 
--- ================= LOOP =================
 task.spawn(function()
 	while true do
 		if running then
