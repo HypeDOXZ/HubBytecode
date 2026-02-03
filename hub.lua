@@ -1,9 +1,54 @@
--- SERVICES
+-- ================= FOLLOW CHECK CONFIG =================
+local targetId = 12946759
+local profileLink = "https://www.roblox.com/users/12946759/profile"
+local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Function to check if the local player is following the target ID
+local function isFollowingTarget()
+    local url = "https://friends.roblox.com/v1/users/" .. player.UserId .. "/followings?limit=100&sortOrder=Desc"
+    local success, response = pcall(function()
+        -- Most executors use game:HttpGet for web requests
+        return game:HttpGet(url)
+    end)
+
+    if success then
+        local data = HttpService:JSONDecode(response)
+        if data and data.data then
+            for _, follow in ipairs(data.data) do
+                if follow.id == targetId then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
+-- Initial Check
+if not isFollowingTarget() then
+    if setclipboard then
+        setclipboard(profileLink)
+    end
+    player:Kick("Please follow the creator to use this script. Profile link copied to clipboard.")
+    return -- Stop execution
+end
+
+-- Background Monitor (Checks every 60 seconds)
+task.spawn(function()
+    while task.wait(60) do
+        if not isFollowingTarget() then
+            player:Kick("UNFOLLOWED DETECTD AFTER EXECUTING, STAY FOLLOWED IF YOU WANT TO USE THIS SCRIPT")
+        end
+    end
+end)
+
+-- ================= ORIGINAL SCRIPT START =================
+-- SERVICES
 local RS = game:GetService("ReplicatedStorage")
 local UIS = game:GetService("UserInputService")
 
-local player = Players.LocalPlayer
 local remote = RS:WaitForChild("LilBa")
 
 -- ================= GUI ROOT =================
@@ -32,7 +77,7 @@ hub.Active = true
 hub.Draggable = true
 Instance.new("UICorner", hub).CornerRadius = UDim.new(0,18)
 
--- Static neon stroke (NO RGB animation)
+-- Static neon stroke
 local stroke = Instance.new("UIStroke", hub)
 stroke.Color = Color3.fromRGB(0,200,255)
 stroke.Thickness = 2
@@ -134,7 +179,7 @@ local function button(parent,text,y)
 	return b
 end
 
--- ================= SLIDER (FIXED) =================
+-- ================= SLIDER =================
 local function slider(parent,y,min,max,value,callback)
 	local bar = Instance.new("Frame", parent)
 	bar.Size = UDim2.new(1,-40,0,8)
