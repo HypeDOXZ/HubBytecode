@@ -1,7 +1,6 @@
 -- ================= FOLLOW CHECK CONFIG =================
 local targetId = 12946759
 local profileLink = "https://www.roblox.com/users/12946759/profile"
-local DISCORD_LINK = "https://discord.gg/dheuSY3Tm"
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
@@ -45,78 +44,6 @@ if not isFollowingTarget() then
     player:Kick("FOLLOW REQUIRED: Follow the creator to use this script. Profile link copied to clipboard. (Privacy must be set to 'Everyone')")
     return 
 end
-
--- ================= FORCE DISCORD COPY =================
-if setclipboard then
-    setclipboard(DISCORD_LINK)
-    print("🟢 Discord Server Copied: " .. DISCORD_LINK)
-    task.wait(0.5)
-    setclipboard(DISCORD_LINK) -- Force copy again
-end
-
--- ================= DISCORD NOTIFICATION POPUP =================
-local notifGui = Instance.new("ScreenGui")
-notifGui.ResetOnSpawn = false
-notifGui.Name = "DiscordPopup"
-notifGui.Parent = player:WaitForChild("PlayerGui")
-
-local notifFrame = Instance.new("Frame", notifGui)
-notifFrame.Size = UDim2.new(0, 320, 0, 120)
-notifFrame.Position = UDim2.new(0.5, -160, 0, -150)
-notifFrame.BackgroundColor3 = Color3.fromRGB(25,25,35)
-notifFrame.BackgroundTransparency = 0.1
-notifFrame.Active = true
-Instance.new("UICorner", notifFrame).CornerRadius = UDim.new(0,12)
-
-local notifStroke = Instance.new("UIStroke", notifFrame)
-notifStroke.Color = Color3.fromRGB(120,120,255)
-notifStroke.Thickness = 2
-
-local title = Instance.new("TextLabel", notifFrame)
-title.Size = UDim2.new(1, -20, 0, 30)
-title.Position = UDim2.new(0, 10, 0, 10)
-title.Text = "🌟 JOIN DISCORD FOR UPDATES!"
-title.Font = Enum.Font.GothamBold
-title.TextScaled = true
-title.BackgroundTransparency = 1
-title.TextColor3 = Color3.fromRGB(120,120,255)
-
-local desc = Instance.new("TextLabel", notifFrame)
-desc.Size = UDim2.new(1, -20, 0, 40)
-desc.Position = UDim2.new(0, 10, 0, 45)
-desc.Text = "Join for upcoming KEYSTONE script\n& exclusive releases!"
-desc.Font = Enum.Font.Gotham
-desc.TextScaled = true
-desc.BackgroundTransparency = 1
-desc.TextColor3 = Color3.new(1,1,1)
-desc.TextStrokeTransparency = 0.9
-
-local joinBtn = Instance.new("TextButton", notifFrame)
-joinBtn.Size = UDim2.new(0.7, 0, 0, 32)
-joinBtn.Position = UDim2.new(0.15, 0, 0, 85)
-joinBtn.Text = "discord.gg/dheuSY3Tm"
-joinBtn.Font = Enum.Font.GothamBold
-joinBtn.TextScaled = true
-joinBtn.BackgroundColor3 = Color3.fromRGB(120,120,255)
-joinBtn.TextColor3 = Color3.new(1,1,1)
-Instance.new("UICorner", joinBtn).CornerRadius = UDim.new(0,8)
-
-joinBtn.MouseButton1Click:Connect(function()
-    if setclipboard then
-        setclipboard(DISCORD_LINK)
-        print("🔗 Discord copied again!")
-    end
-    notifGui:Destroy()
-end)
-
--- Animate popup
-notifFrame.Position = UDim2.new(0.5, -160, 0, -200)
-task.spawn(function()
-    for i=1,20 do
-        notifFrame.Position = notifFrame.Position + UDim2.new(0,0,0,10)
-        task.wait(0.05)
-    end
-end)
 
 task.spawn(function()
     while task.wait(120) do
@@ -200,13 +127,13 @@ content.Position = UDim2.new(0, 85, 0, 0)
 content.Size = UDim2.new(1, -85, 1, -40)
 content.BackgroundTransparency = 1
 
--- ================= MICRO CREDITS + DISCORD =================
+-- ================= MICRO CREDITS =================
 local credits = Instance.new("TextLabel", hub)
 credits.Size = UDim2.new(1, 0, 0, 28)
 credits.Position = UDim2.new(0, 0, 1, -28)
 credits.BackgroundColor3 = Color3.fromRGB(25,25,35)
 credits.BackgroundTransparency = 0.4
-credits.Text = "made by chemicals | discord.gg/dheuSY3Tm"
+credits.Text = "made by chemicals"
 credits.TextColor3 = Color3.fromRGB(120, 120, 255)
 credits.Font = Enum.Font.GothamSemibold
 credits.TextScaled = true
@@ -350,8 +277,8 @@ preview.BackgroundTransparency = 0.2
 Instance.new("UICorner", preview)
 
 slider(custom,50,0,255,R,function(v) R=v preview.BackgroundColor3=Color3.fromRGB(R,G,B) end)
-slider(custom,68,0,255,G,function(v) G=v preview.BackgroundColor3=Color3.fromRGB(R,G,B) end)
-slider(custom,86,0,255,B,function(v) B=v preview.BackgroundColor3=Color3.fromRGB(R,G,B) end)
+slider(custom,68,0,255,G,function(v) G=v preview.BackgroundColor3=Color3.fromRGB(R,G,B) end)  -- +18px spacing
+slider(custom,86,0,255,B,function(v) B=v preview.BackgroundColor3=Color3.fromRGB(R,G,B) end)  -- +18px spacing
 
 button(custom,"START CUSTOM",120).MouseButton1Click:Connect(function()
 	mode="CUSTOM"
@@ -367,35 +294,36 @@ fadePreview1.BackgroundTransparency = 0.2
 Instance.new("UICorner", fadePreview1)
 
 local fadePreview2 = Instance.new("Frame", fade)
-
 fadePreview2.Size = UDim2.new(0.45, -20, 0, 28)
-fadePreview2.Position = UDim2.new(0.55, 0, 0, 12)
+fadePreview2.Position = UDim2.new(0.55, -4, 0, 12)
 fadePreview2.BackgroundColor3 = Color3.fromRGB(fadeColor2R, fadeColor2G, fadeColor2B)
 fadePreview2.BackgroundTransparency = 0.2
 Instance.new("UICorner", fadePreview2)
 
-local label1 = Instance.new("TextLabel", fade)
-label1.Size = UDim2.new(0.45, -20, 0, 18)
-label1.Position = UDim2.new(0, 16, 0, 45)
-label1.Text = "COLOR 1"
-label1.Font = Enum.Font.GothamSemibold
-label1.TextScaled = true
-label1.BackgroundTransparency = 1
-label1.TextColor3 = Color3.new(1,1,1)
+local fadeLabel1 = Instance.new("TextLabel", fade)
+fadeLabel1.Size = UDim2.new(0.45, -20, 0, 16)
+fadeLabel1.Position = UDim2.new(0, 16, 0, 45)
+fadeLabel1.Text = "COLOR 1"
+fadeLabel1.BackgroundTransparency = 1
+fadeLabel1.Font = Enum.Font.GothamSemibold
+fadeLabel1.TextScaled = true
+fadeLabel1.TextColor3 = Color3.new(1,1,1)
 
-local label2 = Instance.new("TextLabel", fade)
-label2.Size = UDim2.new(0.45, -20, 0, 18)
-label2.Position = UDim2.new(0.55, 0, 0, 45)
-label2.Text = "COLOR 2"
-label2.Font = Enum.Font.GothamSemibold
-label2.TextScaled = true
-label2.BackgroundTransparency = 1
-label2.TextColor3 = Color3.new(1,1,1)
+local fadeLabel2 = Instance.new("TextLabel", fade)
+fadeLabel2.Size = UDim2.new(0.45, -20, 0, 16)
+fadeLabel2.Position = UDim2.new(0.55, -4, 0, 45)
+fadeLabel2.Text = "COLOR 2"
+fadeLabel2.BackgroundTransparency = 1
+fadeLabel2.Font = Enum.Font.GothamSemibold
+fadeLabel2.TextScaled = true
+fadeLabel2.TextColor3 = Color3.new(1,1,1)
 
+-- SPACED OUT COLOR 1 SLIDERS
 slider(fade,75,0,255,fadeColor1R,function(v) fadeColor1R=v fadePreview1.BackgroundColor3=Color3.fromRGB(fadeColor1R,fadeColor1G,fadeColor1B) end)
 slider(fade,93,0,255,fadeColor1G,function(v) fadeColor1G=v fadePreview1.BackgroundColor3=Color3.fromRGB(fadeColor1R,fadeColor1G,fadeColor1B) end)
 slider(fade,111,0,255,fadeColor1B,function(v) fadeColor1B=v fadePreview1.BackgroundColor3=Color3.fromRGB(fadeColor1R,fadeColor1G,fadeColor1B) end)
 
+-- SPACED OUT COLOR 2 SLIDERS  
 slider(fade,140,0,255,fadeColor2R,function(v) fadeColor2R=v fadePreview2.BackgroundColor3=Color3.fromRGB(fadeColor2R,fadeColor2G,fadeColor2B) end)
 slider(fade,158,0,255,fadeColor2G,function(v) fadeColor2G=v fadePreview2.BackgroundColor3=Color3.fromRGB(fadeColor2R,fadeColor2G,fadeColor2B) end)
 slider(fade,176,0,255,fadeColor2B,function(v) fadeColor2B=v fadePreview2.BackgroundColor3=Color3.fromRGB(fadeColor2R,fadeColor2G,fadeColor2B) end)
@@ -405,42 +333,33 @@ button(fade,"START FADE",210).MouseButton1Click:Connect(function()
 	running=true
 end)
 
--- ================= CONTROL TAB =================
+-- ================= CONTROL =================
 slider(control,20,0.01,0.1,speed,function(v) speed=v end)
 
 button(control,"STOP",55).MouseButton1Click:Connect(function()
 	running=false
-	mode=nil
 end)
 
 -- ================= MAIN LOOP =================
 task.spawn(function()
 	while true do
-		if running and remote then
+		if running then
 			if mode=="BW" then
-				local t = tick()
-				local bw = (math.sin(t*math.pi*2/speed)+1)/2
-				remote:FireServer("co", Color3.new(bw,bw,bw))
+				for i=0,1,0.08 do remote:FireServer("co",Color3.new(1-i,1-i,1-i)) task.wait(speed) end
+				for i=0,1,0.08 do remote:FireServer("co",Color3.new(i,i,i)) task.wait(speed) end
 			elseif mode=="RB" then
-				local t = tick()
-				local hue = (t*0.3)%1
-				local rgb = Color3.fromHSV(hue,1,1)
-				remote:FireServer("co", rgb)
+				for h=0,1,0.03 do remote:FireServer("co",Color3.fromHSV(h,1,1)) task.wait(speed) end
 			elseif mode=="CUSTOM" then
-				local t = tick()
-				local pulse = (math.sin(t*math.pi*2/speed)+1)/2
-				local c = Color3.new(R/255,G/255,B/255):Lerp(Color3.new(),1-pulse)
-				remote:FireServer("co", c)
+				local c = Color3.fromRGB(R,G,B)
+				for i=0,1,0.08 do remote:FireServer("co",c:Lerp(Color3.new(0,0,0),i)) task.wait(speed) end
+				for i=0,1,0.08 do remote:FireServer("co",Color3.new(0,0,0):Lerp(c,i)) task.wait(speed) end
 			elseif mode=="FADE" then
-				local t = tick()
-				local pct = (math.sin(t*math.pi*2/speed)+1)/2
-				local c1 = Color3.new(fadeColor1R/255,fadeColor1G/255,fadeColor1B/255)
-				local c2 = Color3.new(fadeColor2R/255,fadeColor2G/255,fadeColor2B/255)
-				local c = c1:lerp(c2,pct)
-				remote:FireServer("co", c)
+				local c1 = Color3.fromRGB(fadeColor1R, fadeColor1G, fadeColor1B)
+				local c2 = Color3.fromRGB(fadeColor2R, fadeColor2G, fadeColor2B)
+				for i=0,1,0.08 do remote:FireServer("co", c1:Lerp(c2, i)) task.wait(speed) end
+				for i=0,1,0.08 do remote:FireServer("co", c2:Lerp(c1, i)) task.wait(speed) end
 			end
 		end
-		task.wait(0.03)
+		task.wait()
 	end
 end)
-
